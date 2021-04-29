@@ -4,14 +4,16 @@
             <div slot="center">购物街</div>
         </nav-bar>
         <home-swiper :banners="banners"></home-swiper>
+        <home-recommend-view :recommends="recommends" />
     </div>
 </template>
 
 <script>
 import NavBar from 'components/common/navbar/NavBar'
-import HomeSwiper from './childComponnets/HomeSwiper'
+import HomeSwiper from './childComponents/HomeSwiper'
+import HomeRecommendView from './childComponents/HomeRecommendView'
 
-import { getHomeMultidata } from 'network/homeRequest'
+import { getHomeMultidata, testReq } from 'network/homeRequest'
 
 export default {
     name: "Home",
@@ -23,7 +25,8 @@ export default {
     },
     components: {
         NavBar,
-        HomeSwiper
+        HomeSwiper,
+        HomeRecommendView
     },
     // 生命周期函数：组件一旦创建
     created() {
@@ -34,8 +37,15 @@ export default {
             this.banners = res.data.data.banner.list;
             this.recommends = res.data.data.recommend.list;
         }).catch(err => {
-
+            console.log(err);
         });
+
+        // 2.测试req
+        // testReq().then(res => {
+        //     console.log('test',res);
+        // }).catch(err => {
+
+        // });
     }
 }
 </script>

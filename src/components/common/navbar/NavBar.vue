@@ -27,6 +27,9 @@ export default {
     height: 44px;
     line-height: 44px;
     text-align: center;
+    /* box-shadow: 0 1px 1px rgba(100,100,100,0.08); */
+    /* x偏移值 y偏移值 模糊度 颜色 */
+    box-shadow: 0 3px 1px rgba(206, 25, 194, 0.08);
 }
 .left, .right{
     width: 60px; 
