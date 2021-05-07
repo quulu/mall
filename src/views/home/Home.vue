@@ -1,15 +1,31 @@
 <template>
     <div id="home">
+        <!-- 导航栏 -->
         <nav-bar class="home-nav">
             <div slot="center">购物街</div>
         </nav-bar>
-        <scroll class="scroll-content">
+
+        <!-- better-scroll  -->
+        <!-- scroll的props中，驼峰命名的，在这里需要用probe-type来传值,并且前面要有冒号，才是传递的值 @scrollPosition是scroll组件传出的实时的position -->
+        <scroll 
+        class="scroll-content" 
+        ref="scroll" 
+        :probe-type="3"
+        @scrollPosition="scrollPosition"
+        @pullingUp="loadMore" >
           <home-swiper :banners="banners" ref="swiper"></home-swiper>
           <home-recommend-view :recommends="recommends" />
           <home-feature />
           <tab-control :titles="titles" class="tab-control" @itemClick="tabControlItemClick"></tab-control>
-          <goods-list :goods="showGoodsList" @itemImageLoad="itemImageLoad"></goods-list>
+          <!-- <goods-list :goods="showGoodsList" @itemImageLoad="itemImageLoad"></goods-list> -->
+          <goods-list :goods="showGoodsList" ></goods-list>
         </scroll>
+
+        <!-- 滚动到顶部 
+        修饰符 .native什么时候使用？
+        + 在我们需要监听一个组件的原生事件时，必须给对应的事件加上 .native修饰符，才能进行监听。   
+        -->
+        <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
     </div>
 </template>
 
@@ -19,6 +35,7 @@ import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
+import BackTop from 'components/content/backTop/backTop'
 
 // 子业务组件
 import HomeSwiper from './childComponents/HomeSwiper'
@@ -38,9 +55,10 @@ export default {
         return {
           banners: [],
           recommends:[],
+          // 是否显示回到顶部按钮
+          isShowBackTop: false,
           titles:["流行","新款","精选"],
           currentType: 'pop',
-        //   currentIndex: 1,
           goods: {
             //   'pop': { page: 0,list:[] },
               'pop': { page: 0,
@@ -70,6 +88,16 @@ export default {
                   title: "图片1",
                   collect: "12",
                   price: "67"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片1",
+                  collect: "25",
+                  price: "89"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片1",
+                  collect: "25",
+                  price: "89"
                 },{
                   image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
                   title: "图片1",
@@ -107,6 +135,16 @@ export default {
                   title: "图片2",
                   collect: "25",
                   price: "89"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片2",
+                  collect: "25",
+                  price: "89"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片2",
+                  collect: "25",
+                  price: "89"
                 },]  },
               'sell': { page: 0, list:[
                   {
@@ -139,13 +177,18 @@ export default {
                   title: "图片3",
                   collect: "25",
                   price: "89"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片3",
+                  collect: "25",
+                  price: "89"
+                },{
+                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  title: "图片3",
+                  collect: "25",
+                  price: "89"
                 },]  }
           }
-        }
-    },
-    computed: {
-        showGoodsList() {
-            return this.goods[this.currentType].list;
         }
     },
     components: {
@@ -155,7 +198,13 @@ export default {
         GoodsList,
         HomeSwiper,
         HomeRecommendView,
-        HomeFeature
+        HomeFeature,
+        BackTop
+    },
+    computed: {
+        showGoodsList() {
+            return this.goods[this.currentType].list;
+        }
     },
     // 生命周期函数：组件一旦创建
     created() {
@@ -187,9 +236,18 @@ export default {
         getHomeGoodsDataMethod(type) {
             const currentPage = this.goods[type].page + 1;
             getHomeGoodsData(type,currentPage).then(res => {
-                // console.log(res);
-                this.goods[type].list.push(...res.data.list);
+              let obj = {
+                  image: "https://user-gold-cdn.xitu.io/2020/7/18/1735ffe524331a74?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1",
+                  title: "图片000000",
+                  collect: "999999",
+                  price:"8888.00"
+                };
+                this.goods[type].list.push(obj);
+                // this.goods[type].list.push(...res.data.list);
                 this.goods[type].page += 1;
+
+                this.$refs.scroll.finishPullUp();
+                
             }).catch(err => {
                 // console.log('goods err',err);
             });
@@ -208,17 +266,31 @@ export default {
         tabControlItemClick(index) {
             // 根据index,选出类型
               this.currentType = Object.keys(this.goods)[index];
-            // console.log('dfsfsd',index,Object.keys(this.goods),this.currentType);
         },
+        backTopClick() {
+          this.$refs.scroll.backTo(0,0,300);
+        },
+        scrollPosition(position) {
+          console.log(position);
+          this.isShowBackTop = (-position.y > 300)
+        },
+        // 加载更多
+        loadMore() {
+          this.getHomeGoodsDataMethod(this.currentType);
+        }
+
         // itemImageLoad() {
         //   this.$bus.$on('itemImageLoad', () => {
         //     console.log('-----')
         //     this.$refs.scroll.scroll.refresh()
         //   })
         // }
-        
     }
 }
+
+/* 
+
+*/
 </script> 
 
 <style scoped>
@@ -252,5 +324,11 @@ export default {
   left: 0;
   right: 0;
 }
+
+/* .scroll-content {
+  height: calc(100% - 93px);
+  overflow: hidden;
+  margin-top: 44px;
+} */
 
 </style>

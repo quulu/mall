@@ -21,19 +21,81 @@ export default {
             scroll: null
         }
     },
-    mounted() {
+    props: {
+        // 用来控制scroll是否进行实时监听滚动位置
+        probeType: {
+            type: Number,
+            default: 0
+        },
+        pullUpLoad: {
+            type: Boolean,
+            default: false 
+        }
     },
-    updated() {
+    methods: {
+        // 封装一个回到顶部方法，以供外面调用
+        backTo(x,y,time) {
+            // 给time设置个默认值
+            if (typeof time == null ) {
+                time = 300;
+            }
+            this.scroll.scrollTo(x,y,time);
+        },
+        getMovingDirection() {
+            console.log(this.scroll.movingDirectionX);
+            // return this.scroll.movingDirectionX;
+        },
+        // 完成上拉加载更多
+        finishPullUp() {
+            this.scroll.finishPullUp();
+            this.scroll.refresh();
+        }
+
+    },
+    // 换到这里可以滚到底部
+    // updated() {
+    //     // 1.创建BScroll对象
+    //     this.scroll = new BScroll(this.$refs.wrapper, {
+    //         // 这个是设置div等元素，可以点击
+    //         click:true,
+    //         // 设置这个属性，才可以实时监听滚动的位置
+    //         // probeType: 3，不使用会影响性能。
+    //         probeType: this.probeType,
+    //         // 上拉加载
+    //         pullUpLoad: this.pullUpLoad,
+    //     });
+
+    //     // 2.监听滚动的位置
+    //     this.scroll.on('scroll', (position) => {
+    //         // 将实时的位置position传出去
+    //         this.$emit('scrollPosition',position);
+    //     });
+
+    //     // 3.监听上拉加载更多事件 
+    // },
+    mounted() {
          // 1.创建BScroll对象
         this.scroll = new BScroll(this.$refs.wrapper, {
-            probeType: 2,
-            click:true 
+            // 这个是设置div等元素，可以点击
+            click: true,
+            // 设置这个属性，才可以实时监听滚动的位置
+            // probeType: 3，不使用会影响性能。
+            probeType: this.probeType,
+            // 上拉加载
+            pullUpLoad: this.pullUpLoad,
         });
+
         // 2.监听滚动的位置
         this.scroll.on('scroll', (position) => {
-            console.log(this.scroll);
-            console.log(position);
+            // 将实时的位置position传出去
+            this.$emit('scrollPosition',position);
         });
+
+        // 3.监听上拉加载更多事件 
+        this.scroll.on('pullingUp', () => {
+            this.$emit('pullingUp')
+        });
+
     }
 }
 </script>
