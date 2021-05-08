@@ -50,6 +50,9 @@ export default {
             this.scroll && this.scroll.finishPullUp();
             // this.scroll.refresh();
         },
+        getScrollY() {
+            return this.scroll ? this.scroll.y : 0;
+        }
     },
     // 换到这里可以滚到底部
     // updated() {

@@ -198,7 +198,8 @@ export default {
                 },]  }
           },
           tabControlOffsetTop:0,
-          isTabControlFixed: false
+          isTabControlFixed: false,
+          saveY: 0
         }
     },
     components: {
@@ -215,26 +216,6 @@ export default {
         showGoodsList() {
             return this.goods[this.currentType].list;
         }
-    },
-    // 生命周期函数：组件一旦创建
-    created() {
-        // 1.请求多个数据
-        this.getHomeMultidataMethod();
-        // 2. 请求商品数据
-        this.getHomeGoodsDataMethod('pop');
-        this.getHomeGoodsDataMethod('new');
-        this.getHomeGoodsDataMethod('sell');
-        // 测试
-        // this.testApi();
-    },
-    mounted() {
-      // 1.图片加载完成的事件监听
-      // 要进行防抖，不然太频繁了
-      // 此时的refresh虽然是局部变量，但是闭包。
-      const refresh = debounce(this.$refs.scroll.refresh,100);
-      this.$bus.$on('imageItemLoad', () => {
-        refresh()
-      });
     },
     methods: {
         /**
@@ -310,7 +291,37 @@ export default {
                 console.log("测试错误",err);
             });
         },
-    }
+    },
+    // 生命周期函数：组件一旦创建
+    created() {
+        // 1.请求多个数据
+        this.getHomeMultidataMethod();
+        // 2. 请求商品数据
+        this.getHomeGoodsDataMethod('pop');
+        this.getHomeGoodsDataMethod('new');
+        this.getHomeGoodsDataMethod('sell');
+        // 测试
+        // this.testApi();
+    },
+    mounted() {
+      // 1.图片加载完成的事件监听
+      // 要进行防抖，不然太频繁了
+      // 此时的refresh虽然是局部变量，但是闭包。
+      const refresh = debounce(this.$refs.scroll.refresh,100);
+      this.$bus.$on('imageItemLoad', () => {
+        refresh()
+      });
+    },
+    destroyed() {
+      console.log('Home destroyed');
+    },
+    actived() {
+      this.$refs.scroll.scrollTo(0,this.saveY,0);
+      this.$refs.scroll.refresh();
+    },
+    deactived() {
+      this.saveY = this.$refs.scroll.getScrollY();
+    },
 }
 </script> 
 
