@@ -4,20 +4,27 @@
         <nav-bar class="home-nav">
             <div slot="center">购物街</div>
         </nav-bar>
-
+        <tab-control  :titles="titles" 
+                      class="tab-control"
+                      @itemClick="tabControlItemClick"
+                      ref="tabControl2"
+                      v-show="isTabControlFixed"></tab-control>
         <!-- better-scroll  -->
         <!-- scroll的props中，驼峰命名的，在这里需要用probe-type来传值,并且前面要有冒号，才是传递的值 @scrollPosition是scroll组件传出的实时的position -->
-        <scroll 
-        class="scroll-content" 
-        ref="scroll" 
-        :probe-type="3"
-        @scrollPosition="scrollPosition"
-        @pullingUp="loadMore" >
-          <home-swiper :banners="banners" ref="swiper"></home-swiper>
+        <scroll class="scroll-content" 
+                ref="scroll" 
+                :probe-type="3"
+                :pull-up-load="true"
+                @scrollPosition="scrollPosition"
+                @pullingUp="loadMore">
+          <home-swiper :banners="banners" 
+                       ref="swiper"
+                       @swiperImageLoad="swiperImageLoad"></home-swiper>
           <home-recommend-view :recommends="recommends" />
           <home-feature />
-          <tab-control :titles="titles" class="tab-control" @itemClick="tabControlItemClick"></tab-control>
-          <!-- <goods-list :goods="showGoodsList" @itemImageLoad="itemImageLoad"></goods-list> -->
+          <tab-control :titles="titles" 
+                       @itemClick="tabControlItemClick"
+                       ref="tabControl1"></tab-control>
           <goods-list :goods="showGoodsList" ></goods-list>
         </scroll>
 
@@ -36,6 +43,7 @@ import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backTop/backTop'
+import { debounce } from 'common/utils.js'
 
 // 子业务组件
 import HomeSwiper from './childComponents/HomeSwiper'
@@ -188,7 +196,9 @@ export default {
                   collect: "25",
                   price: "89"
                 },]  }
-          }
+          },
+          tabControlOffsetTop:0,
+          isTabControlFixed: false
         }
     },
     components: {
@@ -218,9 +228,45 @@ export default {
         // this.testApi();
     },
     mounted() {
-      // this.$refs.swiper
+      // 1.图片加载完成的事件监听
+      // 要进行防抖，不然太频繁了
+      // 此时的refresh虽然是局部变量，但是闭包。
+      const refresh = debounce(this.$refs.scroll.refresh,100);
+      this.$bus.$on('imageItemLoad', () => {
+        refresh()
+      });
     },
     methods: {
+        /**
+         *  事件监听相关方法
+         */ 
+        tabControlItemClick(index) {
+            // 根据index,选出类型
+            this.currentType = Object.keys(this.goods)[index];
+            // 让scroll中的tabControl和另外添加的tabControl的选中的统一起来
+            this.$refs.tabControl1.currentIndex = index;
+            this.$refs.tabControl2.currentIndex = index;
+        },
+        backTopClick() {
+          this.$refs.scroll.backTo(0,0,300);
+        },
+        scrollPosition(position) {
+          // 1.判断我们的backTop是否显示
+          this.isShowBackTop = (-position.y > 300);
+          // 2.决定tabControl是否吸顶（position:fixed）
+          this.isTabControlFixed = (-position.y > this.tabControlOffsetTop);
+        },
+        // 加载更多
+        loadMore() {
+          this.getHomeGoodsDataMethod(this.currentType)
+        },
+        swiperImageLoad() {
+          // 2.获取tabControl的offsetTop
+          // 所有的组件都有一个属性$el: 用于获取组件中的元素
+          // 轮播图图片加载完成，则可以拿到这个offsetTop 
+          this.tabControlOffsetTop = this.$refs.tabControl1.$el.offsetTop;
+        },
+
         /**
          * 网络请求相关的方法
          */
@@ -236,6 +282,11 @@ export default {
         getHomeGoodsDataMethod(type) {
             const currentPage = this.goods[type].page + 1;
             getHomeGoodsData(type,currentPage).then(res => {
+              if (this.goods[type].page >= 4) {
+                console.log("当前页数是",this.goods[type].page);
+                  return 
+              }
+
               let obj = {
                   image: "https://user-gold-cdn.xitu.io/2020/7/18/1735ffe524331a74?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1",
                   title: "图片000000",
@@ -245,9 +296,8 @@ export default {
                 this.goods[type].list.push(obj);
                 // this.goods[type].list.push(...res.data.list);
                 this.goods[type].page += 1;
-
                 this.$refs.scroll.finishPullUp();
-                
+
             }).catch(err => {
                 // console.log('goods err',err);
             });
@@ -260,37 +310,8 @@ export default {
                 console.log("测试错误",err);
             });
         },
-        /**
-         *  事件监听相关方法
-         */ 
-        tabControlItemClick(index) {
-            // 根据index,选出类型
-              this.currentType = Object.keys(this.goods)[index];
-        },
-        backTopClick() {
-          this.$refs.scroll.backTo(0,0,300);
-        },
-        scrollPosition(position) {
-          console.log(position);
-          this.isShowBackTop = (-position.y > 300)
-        },
-        // 加载更多
-        loadMore() {
-          this.getHomeGoodsDataMethod(this.currentType);
-        }
-
-        // itemImageLoad() {
-        //   this.$bus.$on('itemImageLoad', () => {
-        //     console.log('-----')
-        //     this.$refs.scroll.scroll.refresh()
-        //   })
-        // }
     }
 }
-
-/* 
-
-*/
 </script> 
 
 <style scoped>
@@ -303,20 +324,29 @@ export default {
     background-color: var(--color-tint);
     color: white;
 
-    position: fixed;
+    /* 在使用浏览器原生滚动时，为了让导航不跟随一起滚动，但是现在是better-scroll 无需设置 */
+    /* position: fixed;
     left: 0;
     top: 0;
     right: 0;
-    z-index: 9;
+    z-index: 9; */
 }
 .tab-control {
+  /* 设置相对定位，就可以不改变位置，设置z-index了 */
+  position: relative;
+  z-index: 9;
+}
+/* 现在不起作用了 */
+/* .tab-control {
     position: sticky;
     top: 44px;
     z-index: 9;
-}
+} */
+
 /* scroll 封装的scroll */
 .scroll-content {
   overflow: hidden;
+  background-color: #ffffff;
 
   position: absolute;
   top: 44px;

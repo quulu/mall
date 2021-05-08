@@ -39,18 +39,17 @@ export default {
             if (typeof time == null ) {
                 time = 300;
             }
-            this.scroll.scrollTo(x,y,time);
+            this.scroll && this.scroll.scrollTo(x,y,time);
         },
-        getMovingDirection() {
-            console.log(this.scroll.movingDirectionX);
-            // return this.scroll.movingDirectionX;
+        // 刷新图片
+        refresh() {
+            this.scroll && this.scroll.refresh();
         },
         // 完成上拉加载更多
         finishPullUp() {
-            this.scroll.finishPullUp();
-            this.scroll.refresh();
-        }
-
+            this.scroll && this.scroll.finishPullUp();
+            // this.scroll.refresh();
+        },
     },
     // 换到这里可以滚到底部
     // updated() {
@@ -86,15 +85,19 @@ export default {
         });
 
         // 2.监听滚动的位置
-        this.scroll.on('scroll', (position) => {
-            // 将实时的位置position传出去
-            this.$emit('scrollPosition',position);
-        });
+        if (this.probeType === 2 || this.probeType === 3) {
+                this.scroll.on('scroll', (position) => {
+                // 将实时的位置position传出去
+                this.$emit('scrollPosition',position);
+            });
+        }
 
-        // 3.监听上拉加载更多事件 
-        this.scroll.on('pullingUp', () => {
-            this.$emit('pullingUp')
-        });
+        // 3.监听scroll滚动到底部
+        if (this.pullUpLoad) {
+            this.scroll.on('pullingUp',() => {
+                this.$emit('pullingUp');
+            });
+        }
 
     }
 }
