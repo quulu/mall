@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-list-item">
+    <div class="goods-list-item" @click="itemClick">
         <img :src="goodsItem.image" alt="" @load="imageItemLoad">
         <div class="goods-info">
             <p>{{goodsItem.title}}</p>
@@ -23,6 +23,42 @@ export default {
     methods: {
         imageItemLoad() {
             this.$bus.$emit('imageItemLoad')
+        },
+        itemClick() {
+            // 跳转到详情页
+            // 路由传参
+            // 1.params传参，只能name,不能path
+            // this.$router.push({
+            //     name:"Detail",
+            //     params: {
+            //         iid: this.goodsItem.iid
+            //     }
+            // });
+
+            // this.$router.push('/detail/' + this.goodsItem.iid);
+
+            /* 
+            2.使用query传参，路由配置的时候path不用带参数 用name + path都可以
+            router/index.js 
+            {
+                path: '/detail',//这里不需要参入参数，参见上面的params写法
+                name: "detail",
+                component: detail//这个details是传进来的组件名称
+            }
+
+            query跳转方法：
+            写法一：this.$router.push(`/detail?id=${this.$route.query.id}`);
+            写法二：this.$router.push({path:'detail',query:{id:123}})
+
+            要是想获取参数值：各自的获取方法是：
+            query和params分别是：this.$route.query.id，this.$route.params.id
+            */
+            this.$router.push({
+                path:"/detail",
+                query: {
+                    iid: this.goodsItem.iid
+                }
+            });
         }
     }
 }
@@ -37,9 +73,6 @@ export default {
 .goods-list-item img {
     width: 100%;
     border-radius: 5px;
-    
-    height: 150px;
-    background-size: cover;
 }
 .goods-info {
     position: absolute;

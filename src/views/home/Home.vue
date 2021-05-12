@@ -72,49 +72,57 @@ export default {
               'pop': { page: 0,
                 list:[
                   {
-                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
-                  title: "图片1",
+                  image: "https://gw.alicdn.com/bao/upload/i2/6000000006696/O1CN01ZnDBiQ1zKoj2N9JsT_!!6000000006696-0-yinhe.jpg_Q75.jpg_.webp",
+                  title: "原创森女部落甜酷小黑裙背带裙a字裙气质小裙子2021年新款女裙系",
                   collect: "45",
-                  price:"12.00"
+                  price:"99.00",
+                  iid: "1"
                 },{
-                  image: "https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3228549874,2173006364&fm=26&gp=0.jpg",
-                  title: "图片1",
+                  image: "https://img.alicdn.com/bao/upload///img.alicdn.com/bao/upload/O1CN01IWrG8S1XhR2lyMWpr_!!6000000002955-0-yinhe.jpg_Q75.jpg_.webp",
+                  title: "邹邹小个子碎花连衣裙女春2021年新款法式复古收腰长款吊带裙子",
                   collect: "10",
-                  price:"34.00"
+                  price:"69.00",
+                  iid: "2"
                 },{
-                  image: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3848402655,92542552&fm=26&gp=0.jpg",
-                  title: "图片1",
+                  image: "https://g-search1.alicdn.com/img/bao/uploaded/i4/imgextra/i2/31935135/O1CN01K4JcH51nnsSFnO8s6_!!0-saturn_solar.jpg_360x360Q90.jpg_.webp",
+                  title: "2021年春秋装韩版新款时尚宽松显瘦圆领蕾丝上衣休闲百搭卫衣女潮",
                   collect: "9",
-                  price:"314.00"
+                  price:"78.00",
+                  iid: "3"
                 },{
-                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
-                  title: "图片1",
+                  image: "https://g-search3.alicdn.com/img/bao/uploaded/i4/i3/4138923936/O1CN012XkCej1ewjar6koPt_!!4138923936.jpg_360x360Q90.jpg_.webp",
+                  title: "春季薄款外套女潮ins2021春秋新款学生初春宽松大码情侣装风衣夏",
                   collect: "58",
-                  price:"4.00"
+                  price:"98.00",
+                  iid: "4"
                 },{
                   image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
                   title: "图片1",
                   collect: "12",
-                  price: "67"
+                  price: "89",
+                  iid: "5"
                 },{
                   image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
                   title: "图片1",
                   collect: "25",
-                  price: "89"
+                  price: "89",
+                  iid: "6"
                 },{
                   image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
                   title: "图片1",
                   collect: "25",
-                  price: "89"
+                  price: "89",
+                  iid: "7"
                 },{
                   image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
                   title: "图片1",
                   collect: "25",
-                  price: "89"
+                  price: "89",
+                  iid: "8"
                 },] },
               'new': { page: 0, list:[
                   {
-                  image: "https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2496571732,442429806&fm=26&gp=0.jpg",
+                  image: "https://img.alicdn.com/imgextra/i2/2201470828016/O1CN01QJslRw295NWToGubM_!!2201470828016.jpg_640x640q80_.webp",
                   title: "图片2",
                   collect: "45",
                   price:"12.00"
@@ -364,6 +372,8 @@ export default {
   bottom: 49px;
   left: 0;
   right: 0;
+
+  z-index: 9;
 }
 
 /* .scroll-content {
