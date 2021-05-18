@@ -7,11 +7,11 @@
         <div class="shop-middle">
             <div class="shop-middle-left shop-middle-item">
                 <div class="shop-sells">
-                    <div class="sells-count">5.8万</div>
+                    <div class="sells-count">{{shopInfo.sells | sellCountFilter}}</div>
                     <div class="sells-text">总销量</div>
                 </div>
                 <div class="shop-goods">
-                    <div class="goods-count">99</div>
+                    <div class="goods-count">{{shopInfo.goodsCount}}</div>
                     <div class="goods-text">全部宝贝</div>
                 </div>
             </div>
@@ -43,7 +43,17 @@ export default {
                 return {}
             }
         }
+    },
+    filters: {
+        sellCountFilter(value) {
+            let result = value;
+            if (value > 10000) {
+                result = (result / 10000).toFixed(1) + '万'
+            }
+            return result;
+        }
     }
+    
 }
 </script>
 

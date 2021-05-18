@@ -34,7 +34,15 @@ export default {
     },
     methods: {
         // 封装一个回到顶部方法，以供外面调用
-        backTo(x,y,time) {
+        // backTo(x,y,time) {
+        //     // 给time设置个默认值
+        //     if (typeof time == null ) {
+        //         time = 300;
+        //     }
+        //     this.scroll && this.scroll.scrollTo(x,y,time);
+        // },
+        // 封装一个回到顶部方法，以供外面调用
+        scrollTo(x,y,time) {
             // 给time设置个默认值
             if (typeof time == null ) {
                 time = 300;

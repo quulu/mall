@@ -43,7 +43,8 @@ import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backTop/backTop'
-import { debounce } from 'common/utils.js'
+// import { debounce } from 'common/utils'
+import { itemImgLoadListenerMixin } from 'common/mixin'
 
 // 子业务组件
 import HomeSwiper from './childComponents/HomeSwiper'
@@ -207,9 +208,11 @@ export default {
           },
           tabControlOffsetTop:0,
           isTabControlFixed: false,
-          saveY: 0
+          saveY: 0,
+          // itemImgListener: null
         }
     },
+    mixins: [itemImgLoadListenerMixin],
     components: {
         NavBar,
         TabControl,
@@ -237,7 +240,7 @@ export default {
             this.$refs.tabControl2.currentIndex = index;
         },
         backTopClick() {
-          this.$refs.scroll.backTo(0,0,300);
+          this.$refs.scroll.scrollTo(0,0,300);
         },
         scrollPosition(position) {
           // 1.判断我们的backTop是否显示
@@ -315,10 +318,18 @@ export default {
       // 1.图片加载完成的事件监听
       // 要进行防抖，不然太频繁了
       // 此时的refresh虽然是局部变量，但是闭包。
-      const refresh = debounce(this.$refs.scroll.refresh,100);
-      this.$bus.$on('imageItemLoad', () => {
-        refresh()
-      });
+      // const refresh = debounce(this.$refs.scroll.refresh,100);
+      // this.$bus.$on('homeItemImgLoad', () => {
+      //   refresh()
+      // });
+
+      // 对监听的事件进行保存
+      // const refresh = debounce(this.$refs.scroll.refresh,100);
+      // this.itemImgListener = () => {
+      //   refresh(20, 30, 'abc');
+      // }
+      // this.$bus.$on('itemImgLoad',this.itemImgListener);
+
     },
     destroyed() {
       console.log('Home destroyed');
@@ -328,7 +339,12 @@ export default {
       this.$refs.scroll.refresh();
     },
     deactived() {
+      // 1.保存Y值
       this.saveY = this.$refs.scroll.getScrollY();
+
+      // 2.取消全局事件的监听
+      // this.$bus.$off('homeItemImgLoad',函数);
+      this.$bus.$off('itemImgLoad',this.itemImgListener);
     },
 }
 </script> 

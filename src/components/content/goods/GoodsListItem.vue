@@ -1,6 +1,7 @@
 <template>
     <div class="goods-list-item" @click="itemClick">
-        <img :src="goodsItem.image" alt="" @load="imageItemLoad">
+        <img :src="showImage" alt="" @load="imageItemLoad">
+
         <div class="goods-info">
             <p>{{goodsItem.title}}</p>
             <span class="price">{{goodsItem.price}}</span>
@@ -20,9 +21,21 @@ export default {
             }
         }
     },
+    computed: {
+        // 用计算属性，是因为两个地方用到了相同的组件，但是数据的取法是不一样的
+        showImage() {
+            return this.goodsItem.image || this.goodsItem.show.img;
+        }
+    },
     methods: {
         imageItemLoad() {
-            this.$bus.$emit('imageItemLoad')
+            this.$bus.$emit('itemImgLoad');
+
+            // if (this.$route.path.indexOf('/home')) {
+            //     this.$bus.$emit('homeItemImgLoad')
+            // } else if (this.$route.path.indexOf('/detail')) {
+            //     this.$bus.$emit('detailItemImgLoad')
+            // }
         },
         itemClick() {
             // 跳转到详情页

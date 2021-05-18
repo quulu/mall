@@ -24,7 +24,7 @@ export default {
      /* x偏移值 y偏移值 模糊程度 颜色 */
      box-shadow: 0 -3px 1px rgba(100, 100, 100, 0.08);
 
-     z-index: 1000;
+     z-index: 20;
  }
 
 </style>

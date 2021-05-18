@@ -9,6 +9,14 @@ export function getDetailDataApi(iid) {
     });
 }
 
+export function getDetailRecommendApi() {
+    return request({
+        url: "/recommend",
+        params: {
+        }
+    });
+}   
+
 // 将三个地方的数据，整合到一个地方
 export class Goods {
     constructor(itemInfo,columns,services) {
@@ -29,10 +37,10 @@ export class Shop {
     constructor(shopInfo) {
         this.logo = shopInfo.logo;
         this.name = shopInfo.name;
-        this.fans = shopInfo.cFans;
-        this.sells = shopInfo.cSells;
+        this.fans = shopInfo.fans;
+        this.sells = shopInfo.sells;
         this.score = shopInfo.score;
-        this.goodsCount = shopInfo.cGoods;
+        this.goodsCount = shopInfo.goodsCount;
     }
 }
 

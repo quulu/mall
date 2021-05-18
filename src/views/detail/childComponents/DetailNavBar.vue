@@ -33,8 +33,12 @@ export default {
     methods: {
         centerItemClick(index) {
             this.currentIndex = index;
+
+            // 点击的事件发出去
+            this.$emit('titleClick',index);
         },
         backClick() {
+            console.log("点击了返回按钮");
             this.$router.back();
             // this.$router.go(-1);
         }
