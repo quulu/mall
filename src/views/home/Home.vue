@@ -42,9 +42,10 @@ import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import BackTop from 'components/content/backTop/backTop'
+// import BackTop from 'components/content/backTop/backTop'
 // import { debounce } from 'common/utils'
-import { itemImgLoadListenerMixin } from 'common/mixin'
+import { itemListenerMixin, backTopMixin } from 'common/mixin'
+// import { BACK_POSITION } from 'common/const'
 
 // 子业务组件
 import HomeSwiper from './childComponents/HomeSwiper'
@@ -212,7 +213,7 @@ export default {
           // itemImgListener: null
         }
     },
-    mixins: [itemImgLoadListenerMixin],
+    mixins: [itemListenerMixin,backTopMixin],
     components: {
         NavBar,
         TabControl,
@@ -221,7 +222,7 @@ export default {
         HomeSwiper,
         HomeRecommendView,
         HomeFeature,
-        BackTop
+        // BackTop
     },
     computed: {
         showGoodsList() {
@@ -239,12 +240,15 @@ export default {
             this.$refs.tabControl1.currentIndex = index;
             this.$refs.tabControl2.currentIndex = index;
         },
-        backTopClick() {
-          this.$refs.scroll.scrollTo(0,0,300);
-        },
+        // 抽取到了mixin里面
+        // backTopClick() {
+        //   this.$refs.scroll.scrollTo(0,0,300);
+        // },
         scrollPosition(position) {
           // 1.判断我们的backTop是否显示
-          this.isShowBackTop = (-position.y > 300);
+          // this.isShowBackTop = (-position.y > BACK_POSITION);
+          this.listenShowBackTop(position);
+          
           // 2.决定tabControl是否吸顶（position:fixed）
           this.isTabControlFixed = (-position.y > this.tabControlOffsetTop);
         },
@@ -369,7 +373,7 @@ export default {
 .tab-control {
   /* 设置相对定位，就可以不改变位置，设置z-index了 */
   position: relative;
-  z-index: 9;
+  z-index: 1100;
 }
 /* 现在不起作用了 */
 /* .tab-control {

@@ -58,6 +58,8 @@
                 <li>内容20</li>
             </ul>
         </scroll>
+        <detail-bottom-bar />
+        <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
     </div>
 </template>
 
@@ -70,12 +72,15 @@ import DetailGoodsInfo from './childComponents/DetailGoodsInfo'
 import DetailParamInfo from './childComponents/DetailParamInfo'
 import DetailComment from './childComponents/DetailComment'
 import GoodsList from 'components/content/goods/GoodsList'
+import DetailBottomBar from './childComponents/DetailBottomBar'
 
 import Scroll from 'components/common/scroll/Scroll'
+// import BackTop from 'components/content/backTop/backTop'
+// import {BACK_POSITION} from 'common/const'
 
 import { getDetailDataApi, Goods, Shop, ParamInfo, getDetailRecommendApi} from 'network/detailApi'
 // import {debounce} from 'common/utils'
-import {itemListenerMixin} from 'common/mixin'
+import {itemListenerMixin, backTopMixin} from 'common/mixin'
 
 export default {
     name:"Detail",
@@ -91,10 +96,11 @@ export default {
             recommends:[],
             // itemImgListener:null
             themeTopYs:[],
-            currentIndex: 0
+            currentIndex: 0,
+            isShowBackTop: false
         }
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin,backTopMixin],
     components: {
         DetailNavBar,
         DetailSwiper,
@@ -104,7 +110,9 @@ export default {
         DetailGoodsInfo,
         DetailParamInfo,
         DetailComment,
-        GoodsList
+        GoodsList,
+        DetailBottomBar,
+        // BackTop
     },
     created() {
         // 1.保存传入的iid
@@ -199,7 +207,7 @@ export default {
             // positonY在 大于等于7938 和 9120之间， index = 1
             // positonY在 大于等于9120 和 9452之间， index = 2
             // positonY在 大于等于9452 和 最大值之间， index = 3
-            
+
             // this.themeTopYs.push(Number.MAX_VALUE);
             let length = this.themeTopYs.length;
             for (let i = 0; i < length-1; i++) {
@@ -209,7 +217,16 @@ export default {
                      console.log(i);
                 }
             }
+            
+            // 4.是否显示回到顶部
+            // this.isShowBackTop = (-position.y > BACK_POSITION);
+            // 调用mixin封装的方法
+            this.listenShowBackTop(position)
         },
+        // 点击的时候 回到顶部 => 抽取到mixin中
+        // backTopClick() {
+        //     this.$refs.scroll.scrollTo(0,0,300);
+        // },
 
         /* 请求数据 */
         getDetailData() {
@@ -359,7 +376,7 @@ export default {
 }
 .detail-scroll-content {
     /* margin-top: 44px; */
-    /* height: calc(100% - 44px); */
+    /* height: calc(100% - 44px - 49px); */
 
     background-color: #fff;
     z-index: 99;
@@ -367,7 +384,7 @@ export default {
     top: 44px;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 58px;
 
     /* overflow: hidden; */
 }
