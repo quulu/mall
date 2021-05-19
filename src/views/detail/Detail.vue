@@ -58,7 +58,7 @@
                 <li>内容20</li>
             </ul>
         </scroll>
-        <detail-bottom-bar />
+        <detail-bottom-bar @addCart="addCart"/>
         <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
     </div>
 </template>
