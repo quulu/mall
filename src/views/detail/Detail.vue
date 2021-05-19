@@ -7,6 +7,9 @@
                 ref="scroll"
                 :probe-type="3"
                 @scrollPosition="contentScroll">
+            <ul>
+                <li v-for="item in $store.state.cartList">{{item.iid}}--数量：{{item.count}}</li>
+            </ul>
             <detail-swiper :topImages="topImages"></detail-swiper>
             <detail-base-info :goods="goodsInfo"></detail-base-info>
             <detail-shop-info :shopInfo="shopInfo">
@@ -227,6 +230,24 @@ export default {
         // backTopClick() {
         //     this.$refs.scroll.scrollTo(0,0,300);
         // },
+
+        // 加入购物车
+        addCart() {
+            // 1.获取购物车需要展示的信息
+            const product = {};
+            product.image = this.topImages[0];
+            product.title = this.goodsInfo.title;
+            product.desc = this.goodsInfo.desc;
+            product.price = this.goodsInfo.realPrice;
+            product.iid = this.iid;
+
+            // 2.将商品添加到购物车
+            // 不能直接修改state的内容，一定要通过mutations, 用commit
+            // this.$store.commit('addCart',product);
+            
+            // 调用方法 actions  用dispatch
+            this.$store.dispatch('addCart',product);
+        },
 
         /* 请求数据 */
         getDetailData() {
