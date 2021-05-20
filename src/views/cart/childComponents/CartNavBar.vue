@@ -1,13 +1,15 @@
 <template>
-    <div class="cart-nav-bar">
+    <div>
         <nav-bar>
-            <div slot="center" class="nav-title">购物车{{cartLength}}</div>
+            <div slot="center" class="center">
+                <div>购物车({{cartLength}})</div>
+            </div>
         </nav-bar>
     </div>
 </template>
 
 <script>
-import NavBar from 'components/common/NavBar'
+import NavBar from 'components/common/navbar/NavBar'
 
 import {mapGetters} from 'vuex'
 
@@ -33,7 +35,5 @@ export default {
 </script>
 
 <style scoped>
-.nav-title {
-    background-color: var(--color-tint);
-}
+
 </style>

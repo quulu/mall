@@ -235,7 +235,7 @@ export default {
         addCart() {
             // 1.获取购物车需要展示的信息
             const product = {};
-            product.image = this.topImages[0];
+            product.image = this.topImages[0].image;
             product.title = this.goodsInfo.title;
             product.desc = this.goodsInfo.desc;
             product.price = this.goodsInfo.realPrice;

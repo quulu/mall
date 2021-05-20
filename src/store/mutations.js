@@ -7,6 +7,8 @@ export default {
         payload.count++;
     },
     [ADD_TO_CART](state, payload) {
+        // 加入购物车商品 是默认选中状态
+        payload.isSelected = true;
         state.cartList.push(payload);
     }
 }

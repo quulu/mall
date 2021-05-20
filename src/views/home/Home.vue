@@ -248,7 +248,7 @@ export default {
           // 1.判断我们的backTop是否显示
           // this.isShowBackTop = (-position.y > BACK_POSITION);
           this.listenShowBackTop(position);
-          
+
           // 2.决定tabControl是否吸顶（position:fixed）
           this.isTabControlFixed = (-position.y > this.tabControlOffsetTop);
         },
@@ -317,9 +317,10 @@ export default {
         this.getHomeGoodsDataMethod('sell');
         // 测试
         // this.testApi();
+        console.log("home 的created");
     },
     mounted() {
-      // 1.图片加载完成的事件监听
+      // 1.图片加载完成的事件监听 
       // 要进行防抖，不然太频繁了
       // 此时的refresh虽然是局部变量，但是闭包。
       // const refresh = debounce(this.$refs.scroll.refresh,100);
@@ -333,6 +334,7 @@ export default {
       //   refresh(20, 30, 'abc');
       // }
       // this.$bus.$on('itemImgLoad',this.itemImgListener);
+      console.log("home生命周期函数的mounted");
 
     },
     destroyed() {
@@ -341,6 +343,7 @@ export default {
     actived() {
       this.$refs.scroll.scrollTo(0,this.saveY,0);
       this.$refs.scroll.refresh();
+      console.log("home 的actived");
     },
     deactived() {
       // 1.保存Y值
