@@ -1,6 +1,6 @@
 <template>
     <div id="detail">
-        <detail-nav-bar class="detail-nav" 
+        <detail-nav-bar class="detail-nav"
                         @titleClick="navTitleClick"
                         ref="nav"/>
         <scroll class="detail-scroll-content"
@@ -15,7 +15,7 @@
             <detail-shop-info :shopInfo="shopInfo">
             </detail-shop-info>
             <detail-param-info ref="params" :paramInfo="paramInfo"></detail-param-info>
-            <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad"></detail-goods-info> 
+            <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
             <detail-comment ref="comment" :commentInfo="commentInfo" class="detail-comment"/>
             <goods-list ref="recommend" :goods="recommends"></goods-list>
             <ul>
@@ -61,7 +61,7 @@
                 <li>内容20</li>
             </ul>
         </scroll>
-        <detail-bottom-bar @addCart="addCart"/>
+        <detail-bottom-bar @addCart="addDetailCart"/>
         <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
     </div>
 </template>
@@ -84,6 +84,9 @@ import Scroll from 'components/common/scroll/Scroll'
 import { getDetailDataApi, Goods, Shop, ParamInfo, getDetailRecommendApi} from 'network/detailApi'
 // import {debounce} from 'common/utils'
 import {itemListenerMixin, backTopMixin} from 'common/mixin'
+
+// vuex的知识补充  mapActions将actions中的方法映射到Detail中
+import {mapActions} from 'vuex'
 
 export default {
     name:"Detail",
@@ -134,7 +137,7 @@ export default {
     mounted() {
         // console.log("mounted",this.$refs.scroll);
         this.$refs.scroll.refresh();
-        
+
         // 监听详情页推荐数据加载完成
         // 1.图片加载完成的事件监听
         // 要进行防抖，不然太频繁了
@@ -163,12 +166,13 @@ export default {
     },
     destroyed() {
         // 取消监听保存
-        this.$bus.$off('itemImgLoad',this.itemImgListener); 
+        this.$bus.$off('itemImgLoad',this.itemImgListener);
     },
     methods: {
+        ...mapActions(['addCart']),
         /* 监听事件 */
         imageLoad() {
-            this.$refs.scroll.refresh() 
+            this.$refs.scroll.refresh()
 
             this.themeTopYs = [];
             this.themeTopYs.push(0);
@@ -184,7 +188,7 @@ export default {
             this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],100);
         },
         contentScroll(position) {
-            // 1.获取y值 
+            // 1.获取y值
             const positionY = -position.y;
 
             // 2.positionY和主题中值进行对比
@@ -220,7 +224,7 @@ export default {
                      console.log(i);
                 }
             }
-            
+
             // 4.是否显示回到顶部
             // this.isShowBackTop = (-position.y > BACK_POSITION);
             // 调用mixin封装的方法
@@ -232,7 +236,7 @@ export default {
         // },
 
         // 加入购物车
-        addCart() {
+        addDetailCart() {
             // 1.获取购物车需要展示的信息
             const product = {};
             product.image = this.topImages[0].image;
@@ -244,9 +248,17 @@ export default {
             // 2.将商品添加到购物车
             // 不能直接修改state的内容，一定要通过mutations, 用commit
             // this.$store.commit('addCart',product);
-            
+
             // 调用方法 actions  用dispatch
-            this.$store.dispatch('addCart',product);
+            // this.$store.dispatch('addCart',product).then(result => {
+            //   console.log(result);
+            // });
+
+            // 通过mapActions映射，则可以直接调用addCart方法
+            this.addCart(product).then(result => {
+              // 弹出toast
+              this.$toast.show(result,2000);
+            });
         },
 
         /* 请求数据 */
@@ -297,7 +309,7 @@ export default {
                     }],
                     goodsCount: "99"
                 });
-                
+
                 // 4.保存商品的详情信息
                 //商品详细信息
                 // this.detailInfo = data.detailInfo;
@@ -320,7 +332,7 @@ export default {
                     name: "腰围可调节大小,高腰显瘦",
                     images: ["https://img.alicdn.com/imgextra/i4/400677031/O1CN01DlHF4u21oFOz1GyhL_!!400677031.jpg_640x0q80_.webp"],
                     set: [],
-                    tables:[] 
+                    tables:[]
                 });
 
                 // 6.评论信息
@@ -378,7 +390,7 @@ export default {
                 this.recommends = res.data.list;
             });
         }
-    } 
+    }
 }
 </script>
 
